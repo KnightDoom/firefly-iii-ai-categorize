@@ -4,11 +4,11 @@ import { getConfigVariable, debug } from "./util.js";
 export default class OpenAiService {
     #openAi;
     #model = "gpt-4o"; // updated to GPT-4o for better results
-
+    #notes = "";
     constructor() {
         const apiKey = getConfigVariable("OPENAI_API_KEY");
-        this.#model = getConfigVariable("OPENAI_MODEL") || "gpt-4o";
-
+        this.#model = getConfigVariable("OPENAI_MODEL", "gpt-4o") ;
+        this.#notes = getConfigVariable("PROMPT_NOTES", "") ;
         this.#openAi = new OpenAI({
             apiKey
         });
@@ -61,6 +61,8 @@ export default class OpenAiService {
     #generatePrompt(categories, destinationName, description) {
         const staticPrompt = `I want to categorize transactions on my bank account into the following categories: ${categories.join(", ")}.
 Please provide a consistent categorization. Just output the name of the category.`;
+        
+const notes = `Note that these statements could help classify better: ${this.notes}.`;
 
 const dynamicPrompt = `
 Transaction details:
@@ -68,7 +70,7 @@ Transaction details:
 - Description: "${description}"
 `;
 
-        return staticPrompt + dynamicPrompt;
+        return staticPrompt + notes + dynamicPrompt;
     }
 }
 
