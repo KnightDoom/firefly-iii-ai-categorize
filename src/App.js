@@ -37,13 +37,18 @@ export default class App {
             concurrency: 1,
             autostart: true
         });
+          //      this.#queue.addEventListener('start', job => debug('Job started', job));
+  //      this.#queue.addEventListener('success', event => debug('Job success', event.job));
+  //      this.#queue.addEventListener('error', event => {
+  //          debug('Job error event:', event);
+  //          console.error('Job error', event.job, event.err, event);
         debug("Queue initialized");
 
-        this.#queue.addEventListener('start', job => debug('Job started', job));
-        this.#queue.addEventListener('success', event => debug('Job success', event.job));
-        this.#queue.addEventListener('error', event => {
-            debug('Job error event:', event);
-            console.error('Job error', event.job, event.err, event);
+
+          this.#queue.addEventListener('success', job => console.log('Job success', job))
+          this.#queue.addEventListener('error', job => console.error('Job error', job))
+          this.#queue.addEventListener('timeout', job => console.log('Job timeout', job))
+
         });
         this.#queue.addEventListener('timeout', event => debug('Job timeout', event.job));
 
